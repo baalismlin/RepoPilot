@@ -2,12 +2,13 @@ import importlib.metadata
 import os
 import sys
 
+from google import genai
 import typer
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
 
-app = typer.Typer(help="RepoPilot local AI agent development tools.")
+app = typer.Typer(help="RepoPilot local AI agent.")
 console = Console()
 
 
@@ -37,13 +38,30 @@ def doctor() -> None:
 
     table.add_row("Python", sys.version.split()[0])
     table.add_row("Virtualenv", virtualenv or "not active")
-    table.add_row("OPENAI_API_KEY", "set" if os.environ.get("OPENAI_API_KEY") else "missing")
-    table.add_row("OPENAI_MODEL", os.environ.get("OPENAI_MODEL", "gpt-4.1-mini"))
+    table.add_row("OPENAI_API_KEY", "set" if os.environ.get(
+        "OPENAI_API_KEY") else "missing")
+    table.add_row("OPENAI_MODEL", os.environ.get(
+        "OPENAI_MODEL", "gpt-4.1-mini"))
     table.add_row("openai", _package_version("openai"))
     table.add_row("pydantic", _package_version("pydantic"))
     table.add_row("typer", _package_version("typer"))
 
     console.print(table)
+
+
+@app.command()
+def hello() -> None:
+    """Print a greeting message."""
+    console.print("Hello ")
+    api_key = os.environ.get("OPENAI_API_KEY")
+    model = os.environ.get("OPENAI_MODEL", "gemini-2.5-flash")
+    client = genai.Client(api_key=api_key)
+    response = client.models.generate_content(
+        model=model,
+        contents="什么是git"
+    )
+
+    console.print(response.text)
 
 
 if __name__ == "__main__":
