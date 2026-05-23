@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repopilot"
+version = "0.1.0"
+description = "Local Python workspace for AI agent development."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "google-genai>=2.6.0",
+    "httpx>=0.27.0",
+    "openai>=1.0.0",
+    "pydantic>=2.8.0",
+    "python-dotenv>=1.0.1",
+    "rich>=13.7.1",
+    "typer>=0.12.3",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.0",
+    "mypy>=1.10.0",
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.5.0",
+]
+
+[project.scripts]
+repopilot = "repopilot_agent.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+repopilot_agent = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+packages = ["repopilot_agent"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
